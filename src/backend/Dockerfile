@@ -24,7 +24,14 @@ RUN python3 -m venv venv
 RUN ./venv/bin/python3 -m pip install pip setuptools wheel --upgrade
 
 # copy and install pip requirements
-COPY --chown=project_user ./src/backend/requirements/ /home/backend/requirements/
+COPY --chown=project_user requirements /home/backend/requirements/
 RUN ./venv/bin/pip3 install -r /home/backend/requirements/${PIP_REQUIREMENTS}
 # copy Django project files
 COPY --chown=project_user ./src/backend/ /home/backend/
+
+FROM node:14.4.0-alpine3.10
+USER root
+WORKDIR /frontend
+COPY ../.. /frontend
+RUN yarn
+RUN yarn build
